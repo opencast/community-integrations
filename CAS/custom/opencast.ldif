@@ -1,0 +1,50 @@
+dn: ou=groups,dc=example,dc=org
+objectclass: organizationalUnit
+objectclass: top
+ou: groups
+
+
+dn: cn=student,ou=groups,dc=example,dc=org
+objectclass: groupOfUniqueNames
+objectClass: top
+cn: student
+uniquemember: uid=sstudent
+
+
+dn: cn=instructor,ou=groups,dc=example,dc=org
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: instructor
+uniquemember: uid=iinstructor
+
+
+dn: cn=admin,ou=groups,dc=example,dc=org
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: admin
+uniquemember: uid=aadmin
+
+
+dn: uid=sstudent,dc=example,dc=org
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+cn: Sally
+sn: Student
+uid: sstudent
+
+
+dn: uid=iinstructor,dc=example,dc=org
+objectClass: inetOrgPerson
+objectclass: organizationalPerson
+cn: Ian
+sn: Instructor
+uid: iinstructor
+
+
+dn: uid=aadmin,dc=example,dc=org
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+cn: Adam
+sn: Admin
+uid: aadmin
+
