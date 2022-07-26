@@ -1,0 +1,22 @@
+version: '3.3'
+services:
+  cas:
+    container_name: cas
+    image: soulwing/cas-mock-server
+    ports:
+      - 127.0.0.1:8081:8080
+  ldap_server:
+    image: osixia/openldap
+    environment:
+     LDAP_BASE_DN: dc=example,dc=org
+     LDAP_DOMAIN: example.org
+     DISABLE_CHOWN: 'true'
+     LDAP_REMOVE_CONFIG_AFTER_SETUP: 'false'
+     LDAP_LOG_LEVEL: 0
+     LDAP_TLS: 'false' 
+    ports:
+      - 389:389
+    volumes:
+      - type: bind
+        source: ./custom/
+        target: /container/service/slapd/assets/config/bootstrap/ldif/custom/

@@ -1,0 +1,89 @@
+diff --git a/etc/security/mh_default_org.xml b/etc/security/mh_default_org.xml
+index 9dcd909283..898efaffb8 100644
+--- a/etc/security/mh_default_org.xml
++++ b/etc/security/mh_default_org.xml
+@@ -751,20 +751,17 @@
+   <!-- # LDAP Support # -->
+   <!-- ################ -->
+ 
+-  <!--
+   <bean id="contextSource"
+     class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+-    < ! - - URL of the LDAP server - - >
+-    <constructor-arg value="ldap://myldapserver:myport" />
+-    < ! - - "Distinguished name" for the unprivileged user - - >
+-    < ! - - This user is merely to perform searches in the LDAP to find the users to login - - >
+-    <property name="userDn" value="uid=user-id,dc=example,dc=com" />
+-    < ! - - Password of the user above - - >
+-    <property name="password" value="mypassword" />
++    <!-- URL of the LDAP server -->
++  <constructor-arg value="ldap://localhost:389" />
++    <!-- "Distinguished name" for the unprivileged user -->
++    <!-- This user is merely to perform searches in the LDAP to find the users to login -->
++    <property name="userDn" value="cn=admin,dc=example,dc=org" />
++    <!-- Password of the user above -->
++    <property name="password" value="admin" />
+   </bean>
+-  -->
+ 
+-  <!--
+   <bean id="ldapAuthProvider"
+     class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
+     <constructor-arg>
+@@ -773,13 +770,13 @@
+         <constructor-arg ref="contextSource" />
+         <property name="userDnPatterns">
+           <list>
+-            < ! - - Dn patterns to search for valid users. Multiple "<value>" tags are allowed - - >
+-            <value>uid={0},dc=example,dc=com</value>
++            <!-- Dn patterns to search for valid users. Multiple "<value>" tags are allowed -->
++            <value>uid={0},dc=example,dc=org</value>
+           </list>
+         </property>
+-        < ! - - If your user IDs are not part of the user Dn's, you can use a search filter to find them - - >
+-        < ! - - This property can be used together with the "userDnPatterns" above - - >
+-        < ! - -
++        <!--If your user IDs are not part of the user Dn's, you can use a search filter to find them -->
++        <!-- This property can be used together with the "userDnPatterns" above -->
++        <!--
+         <property name="userSearch">
+           <bean name="filterUserSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+             < ! - - Base Dn from where the users will be searched for - - >
+@@ -789,13 +786,12 @@
+             <constructor-arg ref="contextSource" />
+           </bean>
+         </property>
+-        - - >
++        -->
+       </bean>
+     </constructor-arg>
+-    < ! - - Defines how the user attributes are converted to authorities (roles) - - >
++    <!-- Defines how the user attributes are converted to authorities (roles) -->
+     <constructor-arg ref="authoritiesPopulator" />
+   </bean>
+-  -->
+ 
+   <!-- #################### -->
+   <!-- # OSGI Integration # -->
+@@ -817,11 +813,9 @@
+ 
+   <!-- Uncomment this to enable LDAP -->
+   <!-- Make sure you provide the same instanceId you used in org.opencastproject.userdirectory.ldap-….cfg -->
+-  <!--
+   <osgi:reference id="authoritiesPopulator" cardinality="1..1"
+                   interface="org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator"
+-                  filter="(instanceId=theId)"/>
+-  -->
++                  filter="(instanceId=mock)"/>
+ 
+   <osgi:reference id="oAuthConsumerDetailsService" cardinality="1..1"
+                   interface="org.springframework.security.oauth.provider.ConsumerDetailsService" />
+@@ -843,7 +837,7 @@
+     <!-- Uncomment this if using Shibboleth or JWT authentication -->
+     <!-- <sec:authentication-provider ref="preauthAuthProvider" /> -->
+     <!-- Uncomment the following line if using LDAP -->
+-    <!-- <sec:authentication-provider ref="ldapAuthProvider" /> -->
++    <sec:authentication-provider ref="ldapAuthProvider" />
+     <sec:authentication-provider user-service-ref="userDetailsService">
+       <!-- The JPA user directory stores bcrypt hashed passwords, but still works with legacy md5 hashes -->
+       <sec:password-encoder ref="passwordEncoder">
