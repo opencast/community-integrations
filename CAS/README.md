@@ -9,6 +9,7 @@ LDAP Users
 The LDAP container is preconfigured with three Opencast users, and an admin user for queries.  The users and passwords are:
 
 | Username | Password | Notes |
+| -------- | -------- | ----- |
 | admin    | admin    | Used for queries, is a default of the container image itself. |
 | aadmin   | aadmin   | The Opencast admin user |
 | iinstructor | iinstructor   | The Opencast instructor user |
