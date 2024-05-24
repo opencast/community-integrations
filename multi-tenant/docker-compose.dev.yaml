@@ -1,0 +1,32 @@
+volumes:
+  opensearch: {}
+  data: {}
+
+networks:
+  default: {}
+
+services:
+
+  opencast:
+    image: quay.io/opencast/build:15.5
+    entrypoint: /bin/sh -c
+    command:
+      - |
+        # KARAF_DEBUG is 1 from docker-compose.yaml but developer contianer already starts in debug mode
+        unset KARAF_DEBUG
+        oc_uninstall
+        oc_install
+        oc_run
+    stdin_open: true
+    tty: true
+    hostname: opencast
+    healthcheck:
+      disable: true
+    volumes:
+      - "${OPENCAST_SRC}:/usr/src/opencast:ro"
+      - ./services/opencast/etc/security:/etc/opencast/security:ro
+      - ./services/opencast/etc/org.opencastproject.organization-mh_default_org.cfg:/etc/opencast/org.opencastproject.organization-mh_default_org.cfg:ro
+      - ./services/opencast/etc/org.opencastproject.organization-tenant-a.cfg:/etc/opencast/org.opencastproject.organization-tenant-a.cfg:ro
+      - ./services/opencast/etc/org.opencastproject.organization-tenant-b.cfg:/etc/opencast/org.opencastproject.organization-tenant-b.cfg:ro
+      - ./services/opencast/etc/org.ops4j.pax.logging.cfg:/etc/opencast/org.ops4j.pax.logging.cfg:ro
+      - data:/data
