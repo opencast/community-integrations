@@ -1,0 +1,60 @@
+volumes:
+  opensearch: {}
+  data: {}
+
+networks:
+  default: {}
+
+services:
+  nginx:
+    image: nginx:1.25-alpine
+    restart: on-failure
+    ports:
+      - "80:80"
+    volumes:
+      - ./services/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - data:/data
+    networks:
+      default:
+        aliases:
+          - cdn.localtest.me
+          - default.localtest.me
+          - tenant-a.localtest.me
+          - tenant-b.localtest.me
+
+  opencast:
+    image: quay.io/opencast/allinone:15.5
+    hostname: opencast
+    healthcheck:
+      disable: true
+    environment:
+      ORG_OPENCASTPROJECT_SERVER_URL: http://opencast:8080
+      ORG_OPENCASTPROJECT_DOWNLOAD_URL: http://cdn.localtest.me
+      ORG_OPENCASTPROJECT_SECURITY_ADMIN_USER: admin
+      ORG_OPENCASTPROJECT_SECURITY_ADMIN_PASS: opencast
+      ORG_OPENCASTPROJECT_SECURITY_DIGEST_USER: opencast_system_account
+      ORG_OPENCASTPROJECT_SECURITY_DIGEST_PASS: CHANGE_ME
+      ELASTICSEARCH_SERVER_HOST: opensearch
+      OPENCAST_DISPATCH_INTERVAL: '1'
+      KARAF_DEBUG: '1'
+      JAVA_DEBUG_OPTS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+    ports:
+      - "5005:5005"
+    volumes:
+      - ./services/opencast/etc/security:/etc/opencast/security:ro
+      - ./services/opencast/etc/org.opencastproject.organization-mh_default_org.cfg:/etc/opencast/org.opencastproject.organization-mh_default_org.cfg:ro
+      - ./services/opencast/etc/org.opencastproject.organization-tenant-a.cfg:/etc/opencast/org.opencastproject.organization-tenant-a.cfg:ro
+      - ./services/opencast/etc/org.opencastproject.organization-tenant-b.cfg:/etc/opencast/org.opencastproject.organization-tenant-b.cfg:ro
+      - ./services/opencast/etc/org.ops4j.pax.logging.cfg:/etc/opencast/org.ops4j.pax.logging.cfg:ro
+      - data:/data
+
+  opensearch:
+    image: opensearchproject/opensearch:1
+    environment:
+      discovery.type: single-node
+      bootstrap.memory_lock: 'true'
+      OPENSEARCH_JAVA_OPTS: -Xms128m -Xmx512m
+      DISABLE_INSTALL_DEMO_CONFIG: 'true'
+      DISABLE_SECURITY_PLUGIN: 'true'
+    volumes:
+      - opensearch:/usr/share/opensearch/data
