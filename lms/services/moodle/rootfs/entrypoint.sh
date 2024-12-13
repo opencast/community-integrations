@@ -31,14 +31,15 @@ if [ ! -f /.initialized ]; then
     --file=/var/backups/example.mbz \
     --categoryid=1
 
-  echo "Wait for group 'MH_DEFAULT_ORG_EXTERNAL_APPLICATIONS'"
-  while ! curl -sSLf "http://opencast.localtest.me/admin-ng/groups/MH_DEFAULT_ORG_EXTERNAL_APPLICATIONS" \
+  while ! curl -sSLf -X POST "http://opencast.localtest.me/admin-ng/groups" \
             --digest -u "opencast_system_account:CHANGE_ME" \
-            -H "X-Requested-Auth: Digest" > /dev/null 2>&1; do
-    echo waiting...
-    sleep 2
+            -H "X-Requested-Auth: Digest" \
+            -d "name=Moodle" \
+            -d "roles=ROLE_SUDO,ROLE_API,ROLE_API_CAPTURE_AGENTS_VIEW,ROLE_API_EVENTS_ACL_DELETE,ROLE_API_EVENTS_ACL_EDIT,ROLE_API_EVENTS_ACL_VIEW,ROLE_API_EVENTS_CREATE,ROLE_API_EVENTS_DELETE,ROLE_API_EVENTS_EDIT,ROLE_API_EVENTS_MEDIA_VIEW,ROLE_API_EVENTS_METADATA_DELETE,ROLE_API_EVENTS_METADATA_EDIT,ROLE_API_EVENTS_METADATA_VIEW,ROLE_API_EVENTS_PUBLICATIONS_VIEW,ROLE_API_EVENTS_SCHEDULING_EDIT,ROLE_API_EVENTS_SCHEDULING_VIEW,ROLE_API_EVENTS_TRACK_EDIT,ROLE_API_EVENTS_VIEW,ROLE_API_GROUPS_CREATE,ROLE_API_GROUPS_DELETE,ROLE_API_GROUPS_EDIT,ROLE_API_GROUPS_VIEW,ROLE_API_LISTPROVIDERS_VIEW,ROLE_API_PLAYLISTS_CREATE,ROLE_API_PLAYLISTS_DELETE,ROLE_API_PLAYLISTS_EDIT,ROLE_API_PLAYLISTS_VIEW,ROLE_API_SECURITY_EDIT,ROLE_API_SERIES_ACL_EDIT,ROLE_API_SERIES_ACL_VIEW,ROLE_API_SERIES_CREATE,ROLE_API_SERIES_DELETE,ROLE_API_SERIES_EDIT,ROLE_API_SERIES_METADATA_DELETE,ROLE_API_SERIES_METADATA_EDIT,ROLE_API_SERIES_METADATA_VIEW,ROLE_API_SERIES_PROPERTIES_EDIT,ROLE_API_SERIES_PROPERTIES_VIEW,ROLE_API_SERIES_VIEW,ROLE_API_STATISTICS_VIEW,ROLE_API_WORKFLOW_DEFINITION_VIEW,ROLE_API_WORKFLOW_INSTANCE_CREATE,ROLE_API_WORKFLOW_INSTANCE_DELETE,ROLE_API_WORKFLOW_INSTANCE_EDIT,ROLE_API_WORKFLOW_INSTANCE_VIEW"; do
+    echo "Group 'Moodle' could not be created; trying again"
+    sleep 5
   done
-  echo "Group 'MH_DEFAULT_ORG_EXTERNAL_APPLICATIONS' now exists"
+  echo "Group 'Moodle' created"
 
   while ! curl -sSLf -X POST "http://opencast.localtest.me/admin-ng/users" \
             --digest -u "opencast_system_account:CHANGE_ME" \
@@ -47,7 +48,7 @@ if [ ! -f /.initialized ]; then
             -F "password=moodle" \
             -F "name=moodle" \
             -F "email=admin@moodle.localtest.me" \
-            -F 'roles=[{"name": "ROLE_GROUP_MH_DEFAULT_ORG_EXTERNAL_APPLICATIONS", "type": "GROUP"},{"name": "ROLE_STUDIO", "type": "INTERNAL"}]'; do
+            -F 'roles=[{"name": "ROLE_GROUP_MOODLE", "type": "GROUP"},{"name": "ROLE_STUDIO", "type": "INTERNAL"}]'; do
     echo "User 'moodle' could not be created; trying again"
     sleep 5
   done
