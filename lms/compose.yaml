@@ -22,7 +22,7 @@ services:
           - moodle.localtest.me
 
   opencast:
-    image: quay.io/opencast/allinone:16.4
+    image: quay.io/opencast/allinone:17.0
     hostname: opencast
     healthcheck:
       disable: true
@@ -42,7 +42,11 @@ services:
       - data:/data
 
   opensearch:
-    image: opensearchproject/opensearch:1
+    image: opencast/opensearch:1
+    build:
+      dockerfile_inline: |
+        FROM docker.io/opensearchproject/opensearch:1
+        RUN bin/opensearch-plugin install analysis-icu
     environment:
       discovery.type: single-node
       bootstrap.memory_lock: 'true'
