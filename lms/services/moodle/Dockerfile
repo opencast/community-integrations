@@ -1,5 +1,5 @@
 ARG MOODLE_PHP_APACHE=latest
-FROM moodlehq/moodle-php-apache:$MOODLE_PHP_APACHE
+FROM docker.io/moodlehq/moodle-php-apache:$MOODLE_PHP_APACHE
 
 USER www-data
 
