@@ -27,5 +27,5 @@ $ docker compose -f compose.yaml -f compose.moodle.yaml exec -- moodle php admin
 Alternatively, you may also run specific tasks, e.g. `process_upload_cron`:
 
 ```sh
-$ docker compose -f compose.yaml -f compose.moodle.yaml exec -- moodle php admin/cli/scheduled_task.php '--execute=\block_opencast\task\process_upload_cron'
+$ docker compose -f compose.yaml -f compose.moodle.yaml exec -- moodle php admin/cli/scheduled_task.php '--execute=\tool_opencast\task\process_upload_cron'
 ```

@@ -3,7 +3,7 @@ volumes:
 
 services:
   moodle-db:
-    image: postgres:16-alpine
+    image: docker.io/library/postgres:16-alpine
     environment:
       POSTGRES_USER: moodle
       POSTGRES_PASSWORD: moodle
@@ -15,14 +15,14 @@ services:
     build:
       context: ./services/moodle
       args:
-        MOODLE_PHP_APACHE: "8.3"
-        MOODLE_VERSION: "v4.5.1"
-        MOODLE_LOCAL_CHUNKUPLOAD: "v4.5-r3"
-        MOODLE_REPOSITORY_OPENCAST: "v4.5-r3"
-        MOODLE_FILTER_OPENCAST: "v4.5-r3"
-        MOODLE_TOOL_OPENCAST: "v4.5-r3"
-        MOODLE_MOD_OPENCAST: "v4.5-r3"
-        MOODLE_BLOCK_OPENCAST: "v4.5-r3"
+        MOODLE_PHP_APACHE: "8.4"
+        MOODLE_VERSION: "v5.0.1"
+        MOODLE_LOCAL_CHUNKUPLOAD: "v5.0-r1"
+        MOODLE_REPOSITORY_OPENCAST: "v5.0-r1"
+        MOODLE_FILTER_OPENCAST: "v5.0-r1"
+        MOODLE_TOOL_OPENCAST: "v5.0-r1"
+        MOODLE_MOD_OPENCAST: "v5.0-r1"
+        MOODLE_BLOCK_OPENCAST: "v5.0-r1"
     restart: on-failure
     environment:
       WWWROOT: http://moodle.localtest.me

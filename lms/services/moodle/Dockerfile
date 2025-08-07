@@ -1,5 +1,5 @@
 ARG MOODLE_PHP_APACHE=latest
-FROM moodlehq/moodle-php-apache:$MOODLE_PHP_APACHE
+FROM docker.io/moodlehq/moodle-php-apache:$MOODLE_PHP_APACHE
 
 USER www-data
 
@@ -50,4 +50,4 @@ COPY rootfs /
 RUN docker-php-ext-enable xdebug \
  && sed -i 's/^; zend_extension=/zend_extension=/' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/entrypoint.sh"]
