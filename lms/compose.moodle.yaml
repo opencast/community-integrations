@@ -17,12 +17,12 @@ services:
       args:
         MOODLE_PHP_APACHE: "8.4"
         MOODLE_VERSION: "v5.0.1"
-        MOODLE_LOCAL_CHUNKUPLOAD: "upgrade-500"
-        MOODLE_REPOSITORY_OPENCAST: "upgrade-500"
-        MOODLE_FILTER_OPENCAST: "upgrade-500"
-        MOODLE_TOOL_OPENCAST: "upgrade-500"
-        MOODLE_MOD_OPENCAST: "upgrade-500"
-        MOODLE_BLOCK_OPENCAST: "upgrade-500"
+        MOODLE_LOCAL_CHUNKUPLOAD: "v5.0-r1"
+        MOODLE_REPOSITORY_OPENCAST: "v5.0-r1"
+        MOODLE_FILTER_OPENCAST: "v5.0-r1"
+        MOODLE_TOOL_OPENCAST: "v5.0-r1"
+        MOODLE_MOD_OPENCAST: "v5.0-r1"
+        MOODLE_BLOCK_OPENCAST: "v5.0-r1"
     restart: on-failure
     environment:
       WWWROOT: http://moodle.localtest.me
