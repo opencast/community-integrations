@@ -22,7 +22,7 @@ services:
           - moodle.localtest.me
 
   opencast:
-    image: quay.io/opencast/allinone:17.4
+    image: quay.io/opencast/allinone:18
     hostname: opencast
     healthcheck:
       disable: true
