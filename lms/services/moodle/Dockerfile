@@ -50,4 +50,4 @@ COPY rootfs /
 RUN docker-php-ext-enable xdebug \
  && sed -i 's/^; zend_extension=/zend_extension=/' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/entrypoint.sh"]
