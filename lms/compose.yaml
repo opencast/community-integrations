@@ -7,7 +7,7 @@ networks:
 
 services:
   nginx:
-    image: docker.io/library/nginx:1.27-alpine
+    image: docker.io/library/nginx:1.29-alpine
     restart: on-failure
     ports:
       - "80:80"
@@ -22,7 +22,7 @@ services:
           - moodle.localtest.me
 
   opencast:
-    image: quay.io/opencast/allinone:18
+    image: quay.io/opencast/allinone:19
     hostname: opencast
     healthcheck:
       disable: true
