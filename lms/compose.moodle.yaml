@@ -16,13 +16,13 @@ services:
       context: ./services/moodle
       args:
         MOODLE_PHP_APACHE: "8.4"
-        MOODLE_VERSION: "v5.0.1"
-        MOODLE_LOCAL_CHUNKUPLOAD: "v5.0-r1"
-        MOODLE_REPOSITORY_OPENCAST: "v5.0-r1"
-        MOODLE_FILTER_OPENCAST: "v5.0-r1"
-        MOODLE_TOOL_OPENCAST: "v5.0-r1"
-        MOODLE_MOD_OPENCAST: "v5.0-r1"
-        MOODLE_BLOCK_OPENCAST: "v5.0-r1"
+        MOODLE_VERSION: "v5.1.1"
+        MOODLE_LOCAL_CHUNKUPLOAD: "v5.1-r1"
+        MOODLE_REPOSITORY_OPENCAST: "v5.1-r1"
+        MOODLE_FILTER_OPENCAST: "v5.1-r1"
+        MOODLE_TOOL_OPENCAST: "v5.1-r1"
+        MOODLE_MOD_OPENCAST: "v5.1-r1"
+        MOODLE_BLOCK_OPENCAST: "v5.1-r1"
     restart: on-failure
     environment:
       WWWROOT: http://moodle.localtest.me

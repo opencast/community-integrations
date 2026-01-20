@@ -9,33 +9,33 @@ RUN git clone https://github.com/moodle/moodle.git /var/www/html \
  && git checkout "$MOODLE_VERSION"
 
 ARG MOODLE_LOCAL_CHUNKUPLOAD=master
-RUN git clone https://github.com/Opencast-Moodle/moodle-local_chunkupload.git /var/www/html/local/chunkupload \
- && cd /var/www/html/local/chunkupload \
+RUN git clone https://github.com/Opencast-Moodle/moodle-local_chunkupload.git /var/www/html/public/local/chunkupload \
+ && cd /var/www/html/public/local/chunkupload \
  && git checkout "$MOODLE_LOCAL_CHUNKUPLOAD"
 
 ARG MOODLE_REPOSITORY_OPENCAST=master
-RUN git clone https://github.com/Opencast-Moodle/moodle-repository_opencast.git /var/www/html/repository/opencast \
- && cd /var/www/html/repository/opencast \
+RUN git clone https://github.com/Opencast-Moodle/moodle-repository_opencast.git /var/www/html/public/repository/opencast \
+ && cd /var/www/html/public/repository/opencast \
  && git checkout "$MOODLE_REPOSITORY_OPENCAST"
 
 ARG MOODLE_FILTER_OPENCAST=master
-RUN git clone https://github.com/Opencast-Moodle/moodle-filter_opencast.git /var/www/html/filter/opencast \
- && cd /var/www/html/filter/opencast \
+RUN git clone https://github.com/Opencast-Moodle/moodle-filter_opencast.git /var/www/html/public/filter/opencast \
+ && cd /var/www/html/public/filter/opencast \
  && git checkout "$MOODLE_FILTER_OPENCAST"
 
 ARG MOODLE_TOOL_OPENCAST=master
-RUN git clone https://github.com/Opencast-Moodle/moodle-tool_opencast.git /var/www/html/admin/tool/opencast \
- && cd /var/www/html/admin/tool/opencast \
+RUN git clone https://github.com/Opencast-Moodle/moodle-tool_opencast.git /var/www/html/public/admin/tool/opencast \
+ && cd /var/www/html/public/admin/tool/opencast \
  && git checkout "$MOODLE_TOOL_OPENCAST"
 
 ARG MOODLE_MOD_OPENCAST=master
-RUN git clone https://github.com/Opencast-Moodle/moodle-mod_opencast.git /var/www/html/mod/opencast \
- && cd /var/www/html/mod/opencast \
+RUN git clone https://github.com/Opencast-Moodle/moodle-mod_opencast.git /var/www/html/public/mod/opencast \
+ && cd /var/www/html/public/mod/opencast \
  && git checkout "$MOODLE_MOD_OPENCAST"
 
 ARG MOODLE_BLOCK_OPENCAST=master
-RUN git clone https://github.com/Opencast-Moodle/moodle-block_opencast.git /var/www/html/blocks/opencast \
- && cd /var/www/html/blocks/opencast \
+RUN git clone https://github.com/Opencast-Moodle/moodle-block_opencast.git /var/www/html/public/blocks/opencast \
+ && cd /var/www/html/public/blocks/opencast \
  && git checkout "$MOODLE_BLOCK_OPENCAST"
 
 USER root
