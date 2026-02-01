@@ -8,7 +8,7 @@ networks:
 services:
 
   opencast:
-    image: quay.io/opencast/build:15.5
+    image: quay.io/opencast/build:19
     entrypoint: /bin/sh -c
     command:
       - |

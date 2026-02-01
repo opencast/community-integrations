@@ -30,5 +30,5 @@ If you have compiled a development distribution of Opencast on your host machine
 
 ```sh
 $ export OPENCAST_SRC="/path/to/my/opencast/src/root/folder"
-$ docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up
+$ docker compose -f compose.yaml -f compose.dev.yaml up
 ```
