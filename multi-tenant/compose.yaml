@@ -7,7 +7,7 @@ networks:
 
 services:
   nginx:
-    image: nginx:1.25-alpine
+    image: docker.io/library/nginx:1.29-alpine
     restart: on-failure
     ports:
       - "80:80"
@@ -23,7 +23,7 @@ services:
           - tenant-b.localtest.me
 
   opencast:
-    image: quay.io/opencast/allinone:15.5
+    image: quay.io/opencast/allinone:19
     hostname: opencast
     healthcheck:
       disable: true
