@@ -1,0 +1,781 @@
+# Configuration for Tobira.
+#
+# All relative paths are relative to the location of this configuration file.
+# Duration values are specified as string with a unit, e.g. "27s". Valid
+# units: 'ms', 's', 'min', 'h' and 'd'.
+#
+# All user-facing texts you can configure here have to be specified per
+# language, with two letter language key. The special key 'default' is
+# required and used as fallback for languages that are not specified
+# explicitly. Take `general.site_title` for example:
+#
+#     [general]
+#     site_title.default = "My university"
+#     site_title.de = "Meine Universität"
+#
+
+[general]
+# The main title of the video portal. Used in the HTML `<title>`, as main
+# heading on the home page, and potentially more.
+#
+# Required! This value must be specified.
+site_title.default = "Tobira Videoportal"
+
+# Public URL to Tobira (without path).
+# Used for RSS feeds, as those require specifying absolute URLs to resources.
+#
+# Example: "https://tobira.my-uni.edu".
+#
+# Required! This value must be specified.
+tobira_url = "http://localhost/#allow-insecure"
+
+# Terms and conditions that a user has to agree to in order to use Tobira.
+# This consists of a title, a markdown rendered text explaining what a user
+# is agreeing to, and a button label for confirmation.
+# These can be specified in multiple languages.
+# Consent is prompted upon first use and only if this is configured. It is
+# re-prompted when any of these values change.
+#
+# We recommend not to configure this unless absolutely necessary,
+# in order to not degrade the user experience needlessly.
+#
+# Example:
+#
+# ```
+# initial_consent.title.default = "Terms & Conditions"
+# initial_consent.button.default = "Agree"
+# initial_consent.text.default = """
+# To use Tobira, you need to agree to our terms and conditions:
+# - [Terms](https://www.our-terms.de)
+# - [Conditions](https://www.our-conditions.de)
+# """
+# ```
+#initial_consent =
+
+# Whether or not to show a download button on the video page.
+#
+# Default value: true
+#show_download_button = true
+
+# Links that are shown in the footer.
+#
+# By overwriting this default value, you can remove the default links and
+# add custom ones. Note that these two default links are special and can
+# be specified with only the shown string. To add custom ones, you need
+# to define a label and a link. The link is either the same for every language
+# or can be specified for each language in the same manner as the label.
+# Example:
+#
+# ```
+# footer_links = [
+#     { label = { default = "Example 1" }, link = "https://example.com" },
+#     { label = { default = "Example 2" }, link = { default = "https://example.com/en" } },
+#     "about",
+# ]
+# ```
+#
+# Default value: ["about", "graphiql"]
+#footer_links = ["about", "graphiql"]
+
+# Additional metadata that is shown below a video. Example:
+#
+#     [general.metadata]
+#     dcterms.spatial = { default = "Location", de = "Ort" }
+#     "http://my.domain/xml/namespace".courseLink = { default = "Course", de = "Kurs"}
+#
+# As you can see, this is a mapping of a metadata location (the XML
+# namespace and the name) to a translated label. For the XML namespace
+# URL, there is one shortcut: the "http://purl.org/dc/terms/" is
+# abbreviated as just "dcterms".
+#
+# It's likely easier to write this as shown above (as extra section)
+# instead of trying to cram it into one line (as shown below with the
+# default value).
+#
+# Instead of the manually translated label, you can use some builtin
+# labels like this:
+#
+#     [general.metadata]
+#     dcterms.license = "builtin:license"
+#     dcterms.source = "builtin:source"
+#
+# As soon as you add your own metadata fields, this default is
+# overwritten. If you want to keep showing the license and source data,
+# you have to add those two lines to your configuration.
+#
+# Default value: { dcterms = { license = "builtin:license", source = "builtin:source" } }
+#metadata = { dcterms = { license = "builtin:license", source = "builtin:source" } }
+
+# A list of URL paths that are reserved for other usages. Users won't be
+# able to create top-level realms with those path segments. Tobira also
+# has some additional built-in reserved paths (e.g. `/favicon.ico`).
+#
+# Example: ["/Shibboleth.sso", "/something-else"]
+#
+# Default value: []
+#reserved_paths = []
+
+# Whether users are allowed to search through all known users, e.g. in the
+# ACL UI to grant a friend access to a video. If `false`, users in the
+# ACL selector can only be added by typing the exact username or email.
+# If this is `true` instead, it is possible to search for users by
+# (partial) name.
+#
+# Default value: false
+#users_searchable = false
+
+# This allows users to edit the ACL of events and series they have write access for.
+# Doing so will update these in Opencast and start the configured republish metadata workflow
+# for events to propagate the changes to other publications as well (series however
+# do not need the extra workflow for this to happen).
+# Instead of waiting for the workflow, Tobira will immediately store the updated ACL in its
+# database.
+#
+# Note that this might lead to situations where the ACL in Tobira is different
+# from that in other publications if the propagation from Opencast fails.
+#
+# Default value: true
+#allow_acl_edit = true
+
+# Activating this will disable ACL editing for events that are part of a series.
+# For the uploader, this means that the ACL of the series will be used.
+#
+# Default value: false
+#lock_acl_to_series = false
+
+# Value of the `itunes:explicit` flag of RSS feeds for series and playlists.
+#
+# Should only be set to false if you are absolutely sure that all
+# content in your Tobira is safe for all audiences.
+#
+# Default value: true
+#explicit_rss_content = true
+
+# Whether users can remove events from a series they have write access for.
+# Should to be disabled when the connected Opencast requires events to always
+# be part of a series, as removing wouldn't work in that case.
+#
+# Default value: true
+#allow_series_event_removal = true
+
+
+[general.global_banner]
+# Color of the global banner: "neutral", "primary" or "danger".
+#
+# Default value: "primary"
+#color = "primary"
+
+# Icon in global banner: "info" or "warning".
+#
+# Default value: "info"
+#icon = "info"
+
+# If set, show a global banner on every page with the specified text.
+# Rendered as markdown.
+#text =
+
+
+[db]
+# The username of the database user.
+#
+# Default value: "tobira"
+user = "tobira"
+
+# The password of the database user.
+#
+# Required! This value must be specified.
+password = "tobira"
+
+# The host the database server is running on.
+#
+# Default value: "127.0.0.1"
+host = "postgres"
+
+# The port the database server is listening on. (Just useful if your
+# database server is not running on the default PostgreSQL port).
+#
+# Default value: 5432
+port = 5432
+
+# The name of the database to use.
+#
+# Default value: "tobira"
+database = "tobira"
+
+# The TLS mode for the database connection.
+#
+# - "on": encryption is required and the server certificate is validated
+#    against trusted certificates which are loaded from the system's
+#    native certificate store. If `server_cert` is set, that's also
+#    loaded and trusted.
+# - "without-verify-cert": encryption is required, but the server
+#   certificate is not checked. Allows MITM attacks! Discouraged.
+# - "off": no encryption. Discouraged even more.
+#
+# Default value: "on"
+tls_mode = "off"
+
+# Path to the server certificate. This makes sense if you don't want to
+# install the certificate globally on the system. Has to be a PEM encoded
+# file containing one or more X509 certificates.
+#server_cert =
+
+
+[http]
+# The TCP port the HTTP server should listen on.
+#
+# Default value: 3080
+port = 3080
+
+# The bind address to listen on.
+#
+# Default value: "127.0.0.1"
+address = "0.0.0.0"
+
+# Unix domain socket to listen on. Specifying this will overwrite
+# the TCP configuration. Example: "/tmp/tobira.socket".
+#unix_socket =
+
+# Unix domain socket file permissions.
+#
+# Default value: 493
+#unix_socket_permissions = 493
+
+
+[auth]
+# How incoming HTTP requests are authenticated. See the documentation!
+#
+# Default value: "none"
+source = "tobira-session"
+
+# Whether to hide the login button in the header. Useful when only admins
+# are supposed to log into Tobira by visiting the login page directly.
+#
+# Default value: false
+#hide_login_button = false
+
+# Link of the login button. If not set, the login button internally
+# (not via `<a>`, but through JavaScript) links to Tobira's own login page.
+#login_link =
+
+# Link of the logout button.
+#logout_link =
+
+# A shared secret for **trusted** external applications. Send this value
+# as the `x-tobira-trusted-external-key`-header to use certain APIs
+# without having to invent a user. Note that this should be hard to
+# guess, and kept secret. Specifically, you are going to want to encrypt
+# every channel this is sent over.
+trusted_external_key = "tobira"
+
+# If `true`, Tobira attaches a JWT to all requests for Opencast static files.
+# This only considers requests to hosts listed in the `opencast` section
+# of the configuration. If necessary, use `other_hosts`.
+#
+# Experimental: this should work fine, but we don't have enough experience
+# yet to generally recommend turning this on. When you do, please report
+# any problems or weird behaviors to us!
+#
+# Default value: false
+#auth_static_files = false
+
+# Determines whether or not Tobira users are getting pre-authenticated against
+# Opencast when they visit external links like the ones to Opencast Studio
+# or the Editor. If you have an SSO-solution, you don't need this.
+#
+# Default value: false
+pre_auth_external_links = true
+
+
+# Tobira's built-in session management. Only relevant if `auth.source = "tobira-session"`.
+[auth.session]
+# How to create sessions from login credentials (userid + password).
+#
+# Default value: "none"
+from_login_credentials = "opencast"
+
+# How `POST /~session` requests are authenticated.
+#
+# Default value: "none"
+#from_session_endpoint = "none"
+
+# Duration of a Tobira-managed login session.
+#
+# Default value: "30d"
+#duration = "30d"
+
+
+[auth.callback]
+# Headers relevant for the auth callback. See docs.
+#relevant_headers =
+
+# Cookies relevant for the auth callback. See docs.
+#relevant_cookies =
+
+# For how long a callback's response is cached. The key of the cache is
+# the set of headers forwarded to the callback. Set to 0 to disable
+# caching.
+#
+# Default value: "5min"
+#cache_duration = "5min"
+
+
+# Configuration related to the built-in login page.
+[auth.login_page]
+# Label for the user-ID field. If not set, "User ID" is used.
+#user_id_label =
+
+# Label for the password field. If not set, "Password" is used.
+#password_label =
+
+# An additional note that is displayed on the login page. If not set, no
+# additional note is shown.
+#note =
+
+
+# JWT configuration. See documentation for more information.
+[auth.jwt]
+# Signing algorithm for JWTs.
+#
+# Valid values: "ES256", "ES384", "ED25519"
+#
+# Default value: "ES384"
+#signing_algorithm = "ES384"
+
+# Path to the secret signing key. The key has to be PEM encoded. If not
+# specified, a key is generated everytime Tobira is started. The randomly
+# generated key is fine for most use cases.
+#secret_key =
+
+# The duration for which a JWT is valid. JWTs are just used as temporary
+# ways to authenticate against Opencast, so they just have to be valid
+# until the frontend received the JWT and used it with Opencast.
+#
+# Default value: "30s"
+#expiration_time = "30s"
+
+# Duration for which JWTs guarding static files are valid. Only used if
+# `auth.auth_static_files` is enabled.
+#
+# Default value: "30s"
+#static_file_expiration_time = "30s"
+
+# Duration for which JWTs in download links are valid. Only used if
+# `auth.auth_static_files` is enabled.
+#
+# Default value: "3min"
+#download_expiration_time = "3min"
+
+
+[auth.roles]
+# The role giving a user "Tobira admin" status, giving them all
+# Tobira-related privileges, i.e. everything for which a role can be
+# configured below. Unlike ROLE_ADMIN, this does not give the user access
+# to all content.
+#
+# Default value: "ROLE_TOBIRA_ADMIN"
+tobira_admin = "ROLE_ADMIN"
+
+# The role granting permission to use Tobira's uploader.
+#
+# Default value: "ROLE_TOBIRA_UPLOAD"
+upload = "ROLE_USER"
+
+# The role granting permission to create new series through Tobira.
+#
+# Default value: "ROLE_TOBIRA_CAN_CREATE_SERIES"
+can_create_series = "ROLE_USER"
+
+# The role granting permission to create new playlists through Tobira.
+#
+# Default value: "ROLE_USER"
+can_create_playlists = "ROLE_USER"
+
+# The role granting permission to use Opencast Studio from Tobira.
+#
+# Default value: "ROLE_TOBIRA_STUDIO"
+studio = "ROLE_USER"
+
+# The role granting permission to use the Opencast Editor from Tobira.
+#
+# Default value: "ROLE_TOBIRA_EDITOR"
+editor = "ROLE_USER"
+
+# The role granting permission to create one's own "user page".
+#
+# Default value: "ROLE_USER"
+user_realm = "ROLE_USER"
+
+# The role granting permission to find unlisted events and series when
+# editing page content. Usually, only very few people should have this
+# privilege. Everyone can always find listed items and items they have
+# write access to. This does not affect the search results of the main
+# search.
+#
+# Default value: "ROLE_TOBIRA_CAN_FIND_UNLISTED"
+can_find_unlisted = "ROLE_USER"
+
+# The role granting "page admin" privileges on all non-user pages.
+#
+# Default value: "ROLE_TOBIRA_GLOBAL_PAGE_ADMIN"
+global_page_admin = "ROLE_ADMIN"
+
+# The role granting "page moderator" privileges on all non-user pages.
+#
+# Default value: "ROLE_TOBIRA_GLOBAL_PAGE_MODERATOR"
+global_page_moderator = "ROLE_ADMIN"
+
+# List of prefixes that user roles can have. Used to distinguish user
+# roles from other roles. Should probably be the same as
+# `role_user_prefix` in `acl.default.create.properties` in OC.
+#
+# Default value: ["ROLE_USER_"]
+user_role_prefixes = ["ROLE_USER_"]
+
+# Tenant specific admin role that has the same permission level
+# as ROLE_ADMIN for that tenant.
+#tenant_admin =
+
+
+[log]
+# Specifies what log messages to emit, based on the module path and log level.
+#
+# This is a map where the key specifies a module path prefix, and the
+# value specifies a minimum log level. For each log message, the map
+# entry with the longest prefix matching the log's module path is chosen.
+# If no such entry exists, the log is not emitted. Otherwise, that
+# entry's level is used to check whether the log message should be
+# emitted.
+#
+# Take the following example: the following config only allows ≥"info"
+# logs from Tobira generally, but also ≥"trace" messages from the `db`
+# submodule. But it completely disables all logs from `tobira::db::tx`.
+# Finally, it also enabled ≥"debug" messages from one of Tobira's
+# dependencies, the HTTP library `hyper`.
+#
+#    [log]
+#    filters.tobira = "info"
+#    filters."tobira::db" = "trace"
+#    filters."tobira::db::tx" = "off"
+#    filters.hyper = "debug"
+#
+# Default value: { tobira = "debug" }
+#filters = { tobira = "debug" }
+
+# If this is set, log messages are also written to this file. The string
+# `${cmd}` in this value is replaced by the subcommand name of the Tobira
+# process, e.g. `serve`, `worker` or `other` (for less important
+# commands). Example: "/var/log/tobira-${cmd}.log".
+#file =
+
+# If this is set to `false`, log messages are not written to stdout.
+#
+# Default value: true
+#stdout = true
+
+
+[opencast]
+# URL to Opencast. Currently used for all purposes (syncing, Studio,
+# upload, ...) unless overwritten below. In the future, Tobira might use
+# the service registry API to figure out suitable nodes for each
+# purpose (again, unless explicitly specified below).
+#
+# Some HTTP requests to Opencast contain the unencrypted `sync.password`,
+# so using HTTPS is strongly encouraged. In fact, HTTP is only allowed if
+# the host resolves to a loopback address.
+#
+# Example: "http://localhost:8080" or "https://oc.my-uni.edu".
+host = "http://opencast.localtest.me/#allow-insecure"
+
+# Explicitly set Opencast node used for data synchronization. The Tobira
+# module needs to run on this node.
+#sync_node =
+
+# Explicitly set Opencast node used for the video uploader. Has to offer
+# the ingest API.
+#upload_node =
+
+# Explicitly set Opencast node for "external API" use (used to modify
+# Opencast data from Tobira).
+#external_api_node =
+
+# Explicitly set base-URL to Opencast Studio.
+#
+# Example: "https://admin.oc.my-uni.edu/studio".
+#studio_url =
+
+# Explicitly set the base-URL to the Opencast editor.
+#
+# Example: "https://admin.oc.my-uni.edu/editor-ui/index.html".
+#editor_url =
+
+# Extra Opencast hosts not listed in any other value above, that can also
+# be trusted.
+#
+# Default value: []
+other_hosts = [
+  "http://cdn.localtest.me/#allow-insecure"
+]
+
+# Username of the user used to communicate with Opencast for data syncing
+# and external API authentication.
+# This user has to have access to all events and series. Currently, that
+# user has to be admin.
+#
+# Required! This value must be specified.
+user = "admin"
+
+# Password of the user used to communicate with Opencast.
+#
+# Required! This value must be specified.
+password = "opencast"
+
+# ID of the workflow used to republish metadata.
+#
+# Default value: "republish-metadata"
+#republish_workflow_id = "republish-metadata"
+
+
+[sync]
+# A rough estimate of how many items (events & series) are transferred in
+# each HTTP request while harvesting (syncing) with the Opencast
+# instance.
+#
+# A very large number might cause problems due to the Opencast or Tobira
+# node having to hold that many items in memory, or due to network
+# request size restrictions. Too small of a number means that the
+# overhead of each request will become more significant, slowing down
+# harvesting. But more importantly: if your Opencast instance has more
+# items with exactly the same `updated` timestamp than the configured
+# `preferred_harvest_size`, Tobira is unable to harvest. The `updated`
+# timestamp is has millisecond precision, so this situation is highly
+# unlikely to occur naturally. However, this can easily occur with
+# artificial timestamps, like when you migrate old Opencast data
+# (without an `updated` timestamp). Be aware of that.
+#
+# Default value: 500
+#preferred_harvest_size = 500
+
+# The duration to wait after a "no new data" reply from Opencast. Only
+# relevant in `--daemon` mode.
+#
+# Default value: "30s"
+#poll_period = "30s"
+
+# Whether SHA1-hashed series passwords (as assignable by ETH's admin UI
+# build) are interpreted in Tobira.
+#
+# Default value: false
+#interpret_eth_passwords = false
+
+# Number of concurrent tasks with which Tobira downloads assets from
+# Opencast. The default should be a good sweet spot. Decrease to reduce
+# load on Opencast, increase to speed up download a bit.
+#
+# Default value: 8
+#concurrent_download_tasks = 8
+
+# List of deletion modes that determine which, if any, realm pages are to be deleted
+# automatically when the corresponding Opencast item (series, event or playlist)
+# is deleted.
+# If configured, Tobira will delete the corresponding realm page(s) when they meet
+# the following conditions:
+# - Realm name is derived from the deleted item.
+# - Realm has no sub realms.
+# - Realm has no other blocks than the deleted item.
+#
+# The last option can be disabled by adding `:eager` to the deletion mode.
+#
+# Example:
+# ```
+# auto_delete_pages = ["series", "events:eager"]
+# ```
+#
+# This would delete series pages in non-eager mode and event pages in eager mode.
+#
+# Default value: []
+#auto_delete_pages = []
+
+
+[meili]
+# The access key. This can be the master key, but ideally should be an API
+# key that only has the priviliges it needs.
+#
+# Required! This value must be specified.
+key = "tobira"
+
+# The host MeiliSearch is running on. As requests include the `key`, you
+# should use HTTPS if Meili is running on another machine. In fact, HTTP
+# is disallowed unless the host resolves to a loopback address.
+#
+# Default value: "http://127.0.0.1:7700"
+host = "http://meilisearch:7700/#allow-insecure"
+
+# A prefix for index names in Meili. Useful only to avoid collision if
+# other services use Meili as well.
+#
+# Default value: "tobira_"
+#index_prefix = "tobira_"
+
+# How often DB changes are written back to the search index.
+#
+# Default value: "5s"
+#update_interval = "5s"
+
+
+# See the relevant chapter in our documentation on how to configure this section.
+[theme]
+# Height of the header. Increasing this size only enlarges the logo, the
+# other elements stay the same size and centered.
+#
+# Default value: 85
+#header_height = 85
+
+# Path to an SVG file that is used as favicon.
+#
+# Required! This value must be specified.
+favicon = "/etc/tobira/theme/favicon.svg"
+
+# Logo used in the top left corner of the page. Using SVG logos is recommended.
+# You can configure specific logos for small and large screens, dark and light mode,
+# and any number of languages. Example:
+#
+# ```
+# logos = [
+#     { path = "logo-wide-light.svg", mode = "light", size = "wide", resolution = [425, 182] },
+#     { path = "logo-wide-dark.svg", mode = "dark", size = "wide", resolution = [425, 182] },
+#     { path = "logo-small.svg", size = "narrow", resolution = [212, 182] },
+# ]
+# ```
+#
+# See the documentation on theming/logos for more info and additional examples!
+#
+# Required! This value must be specified.
+logos = [
+  { path = "/etc/tobira/theme/logo-large.svg",      mode = "light", size = "wide",   resolution = [425, 182] },
+  { path = "/etc/tobira/theme/logo-large-dark.svg", mode = "dark",  size = "wide",   resolution = [425, 182] },
+  { path = "/etc/tobira/theme/logo-small.svg",                      size = "narrow", resolution = [212, 182] },
+]
+
+
+
+# Colors used in the UI. Specified in sRGB.
+[theme.color]
+# The primary color used for most colored UI elements. Should have a
+# perceived brightness (L in LCH color space) of 35-55.
+#
+# Default value: "#01758f"
+#primary = "#01758f"
+
+# A color used to indicate errors and potentially destructive actions.
+# Should be red.
+#
+# Default value: "#b64235"
+#danger = "#b64235"
+
+# Grey tone. This is configurable in case you want to have a slightly
+# colored grey, e.g. slightly warm.
+#
+# Only hue and saturation (or more precisely, hue and chroma in the LCH
+# color space) are used from this. The brightness of the configured color
+# is ignored. Still try using a color with roughly 50% perceived
+# brightness to reduce rounding errors.
+#
+# Default value: "#777777"
+#grey50 = "#777777"
+
+# A color for positive things and "call to action" elements. Only specify
+# this color if your primary color is reddish!
+#happy =
+
+
+[theme.font]
+# The main font family to use in Tobira. Needs to be a valid CSS value for
+# `font-family`.
+#
+# Default value: "'Open Sans'"
+#main_family = "'Open Sans'"
+
+# Path to a CSS file with extra `@font-face` declarations. If you want to
+# refer to files included via `font_files` (see below), be sure to to
+# include the full path, e.g. `/~assets/fonts/vollkorn-400.woff2`. That's
+# required as the font files are served with a hashed filename for
+# caching and Tobira needs to fix up the path in your CSS.
+#extra_css =
+
+# Additional font files to serve under `/~assets/fonts/`. Prefer using the
+# WOFF 2.0 format: it has excellent browser support and great compression.
+#
+# Default value: []
+#files = []
+
+
+[upload]
+# Whether specifying a series is required when uploading.
+#
+# Default value: false
+#require_series = false
+
+# Specify workflow to start after ingesting. If unset, Tobira does not
+# send any workflow ID, meaning Opencast will choose its default.
+#workflow =
+
+# Subtype of thumbnail image. Has to match the subtype used in the related
+# Opencast workflows and should be identical to what is set for the editor.
+# See https://github.com/opencast/opencast/blob/a68c337f11499a0a939a5a96bffa3898c1cd032c/etc/org.opencastproject.editor.EditorServiceImpl.cfg#L58
+#
+# Please note that `player+preview` should still be used for the final publication
+# as there are multiple operations in Opencast that rely on that hardcoded subtype,
+# meaning it cannot be overwritten by any configuration in these places.
+#
+# Default value: "player+preview"
+#thumbnail_subtype = "player+preview"
+
+# When uploading a thumbnail, this property is set to trigger
+# the operation that prepares the thumbnail for publication
+# in the default `partial-publish` workflow.
+# This needs to match the property in Opencast and should also be identical
+# to what is set for the editor when you don't use custom workflows for publication.
+# See https://github.com/opencast/opencast/blob/a68c337f11499a0a939a5a96bffa3898c1cd032c/etc/org.opencastproject.editor.EditorServiceImpl.cfg#L62
+#
+# Default value: "thumbnail_edited"
+#thumbnail_workflow_property = "thumbnail_edited"
+
+
+# Matomo integration (optional). Currently only used by Paella if configured.
+[matomo]
+# URL of your Matomo server. Example: "https://matomo.myuni.edu/matomo/".
+#
+# Note: Adding the filename of the Matomo script to the URL configured here should result in
+# a URL to a publicly accessible JS file.
+#server =
+
+# Matomo site ID, e.g. `side_id = "1"`
+#site_id =
+
+# Filename for the Matomo JS script.
+#
+# Default value: "matomo.js"
+#tracker_url_js = "matomo.js"
+
+# Filename for the Matomo PHP endpoint.
+#
+# Default value: "matomo.php"
+#tracker_url_php = "matomo.php"
+
+
+[player]
+# Additional Paella plugin configuration (JSON object). This is merged
+# into the `plugins` object in the Tobira-internal Paella config.
+# Warning: this could break Paella if used incorrectly. This is mostly
+# intended to configure user tracking, e.g.:
+#
+# ```
+# paella_plugin_config = """{
+#     "es.upv.paella.userEventTracker": { ... },
+#     "es.upv.paella.matomo.userTrackingDataPlugin": { ... }
+# }"""
+# ```
+#
+# Default value: "{}"
+#paella_plugin_config = "{}"

@@ -1,0 +1,95 @@
+volumes:
+  opensearch: {}
+  postgres: {}
+  meilisearch: {}
+  data: {}
+
+networks:
+  default: {}
+
+services:
+  nginx:
+    image: docker.io/library/nginx:1.29-alpine
+    restart: on-failure
+    ports:
+      - "80:80"
+    volumes:
+      - ./services/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - data:/data
+    networks:
+      default:
+        aliases:
+          - cdn.localtest.me
+          - opencast.localtest.me
+          - tobira.localtest.me
+
+  opencast:
+    image: quay.io/opencast/allinone:19
+    hostname: opencast
+    healthcheck:
+      disable: true
+    environment:
+      ORG_OPENCASTPROJECT_SERVER_URL: http://opencast:8080
+      ORG_OPENCASTPROJECT_DOWNLOAD_URL: http://cdn.localtest.me
+      ORG_OPENCASTPROJECT_SECURITY_ADMIN_USER: admin
+      ORG_OPENCASTPROJECT_SECURITY_ADMIN_PASS: opencast
+      ORG_OPENCASTPROJECT_SECURITY_DIGEST_USER: opencast_system_account
+      ORG_OPENCASTPROJECT_SECURITY_DIGEST_PASS: CHANGE_ME
+      ELASTICSEARCH_SERVER_HOST: opensearch
+      KARAF_DEBUG: '1'
+      JAVA_DEBUG_OPTS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+    ports:
+      - "5005:5005"
+    volumes:
+      - ./services/opencast/etc/security:/etc/opencast/security:ro
+      - ./services/opencast/etc/org.opencastproject.adminui.endpoint.SeriesEndpoint.cfg:/etc/opencast/org.opencastproject.adminui.endpoint.SeriesEndpoint.cfg:ro
+      - data:/data
+
+  opensearch:
+    image: opencast/opensearch:1
+    build:
+      dockerfile_inline: |
+        FROM docker.io/opensearchproject/opensearch:1
+        RUN bin/opensearch-plugin install analysis-icu
+    environment:
+      discovery.type: single-node
+      bootstrap.memory_lock: 'true'
+      OPENSEARCH_JAVA_OPTS: -Xms128m -Xmx512m
+      DISABLE_INSTALL_DEMO_CONFIG: 'true'
+      DISABLE_SECURITY_PLUGIN: 'true'
+    volumes:
+      - opensearch:/usr/share/opensearch/data
+
+  tobira:
+    image: quay.io/opencast/tobira:latest
+    command: ["serve"]
+    restart: on-failure
+    volumes:
+      - ./services/tobira/etc:/etc/tobira:ro
+
+  tobira-worker:
+    image: quay.io/opencast/tobira:latest
+    command: ["worker"]
+    restart: on-failure
+    volumes:
+      - ./services/tobira/etc:/etc/tobira:ro
+
+  postgres:
+    image: docker.io/library/postgres:16-alpine
+    environment:
+      POSTGRES_USER: tobira
+      POSTGRES_PASSWORD: tobira
+      POSTGRES_DB: tobira
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  meilisearch:
+    image: docker.io/getmeili/meilisearch:v1.34
+    environment:
+      MEILI_NO_ANALYTICS: true
+      MEILI_MASTER_KEY: tobira
+      MEILI_HTTP_PAYLOAD_SIZE_LIMIT: 20Gb
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearch:/data.ms
