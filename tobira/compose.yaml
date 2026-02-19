@@ -15,7 +15,6 @@ services:
       - "80:80"
     volumes:
       - ./services/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - data:/data
     networks:
       default:
         aliases:
@@ -30,7 +29,7 @@ services:
       disable: true
     environment:
       ORG_OPENCASTPROJECT_SERVER_URL: http://opencast:8080
-      ORG_OPENCASTPROJECT_DOWNLOAD_URL: http://cdn.localtest.me
+      ORG_OPENCASTPROJECT_DOWNLOAD_URL: http://cdn.localtest.me/static
       ORG_OPENCASTPROJECT_SECURITY_ADMIN_USER: admin
       ORG_OPENCASTPROJECT_SECURITY_ADMIN_PASS: opencast
       ORG_OPENCASTPROJECT_SECURITY_DIGEST_USER: opencast_system_account
@@ -59,6 +58,14 @@ services:
       DISABLE_SECURITY_PLUGIN: 'true'
     volumes:
       - opensearch:/usr/share/opensearch/data
+
+  octoka:
+    image: ghcr.io/opencast/octoka:1.2.0
+    command: ["run"]
+    restart: on-failure
+    volumes:
+      - ./services/octoka/etc:/etc/octoka:ro
+      - data:/data:ro
 
   tobira:
     image: quay.io/opencast/tobira:latest

@@ -277,7 +277,7 @@ trusted_external_key = "tobira"
 # any problems or weird behaviors to us!
 #
 # Default value: false
-#auth_static_files = false
+auth_static_files = true
 
 # Determines whether or not Tobira users are getting pre-authenticated against
 # Opencast when they visit external links like the ones to Opencast Studio

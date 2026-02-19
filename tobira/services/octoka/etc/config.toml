@@ -1,0 +1,171 @@
+# Configuration for octoka.
+#
+# All relative paths are relative to the location of this configuration file.
+# Duration values are specified as string with a unit, e.g. "27s". Valid
+# units: 'ms', 's', 'min', 'h' and 'd'.
+
+[opencast]
+# Path to the Opencast `downloads/` folder, e.g. `/mnt/opencast/downloads`.
+# Settings this is required in some situations (e.g. if `http.serve_files`
+# is enabled).
+downloads_path = "/data/opencast/downloads"
+
+# Host of Opencast. Currently used for `fallback`.
+#
+# Default value: "http://localhost:8080"
+host = "http://opencast.localtest.me"
+
+# Specifies if/how Opencast is used as a fallback when requests cannot be
+# authorized by octoka itself (purely based on JWT).
+#
+# - "none": no fallback, Opencast is not contacted.
+# - "head": an HTTP HEAD request is sent to Opencast, with the same URI
+#   and headers as the incoming request. Octoka's behavior depends on
+#   Opencast's response:
+#   - 2xx: treat request as allowed
+#   - 404: respond with 404
+#   - 401: respond with 401, forwarding the www-authenticate header
+#   - everything else: treat as forbidden
+# - "get": like "head", but with HTTP method GET. This exists only for
+#   older Opencast which had incorrect responses to HEAD requests. If you
+#   use this, set `x.accel.redirect` in OC, in order to not send the file.
+#   This option will get deprecated and removed in the future.
+#
+# Default value: "head"
+#fallback = "head"
+
+# List of possible path prefixes that should be handled by octoka. For
+# most Opencast systems, the default is fine as all paths start with
+# `/static/...`.
+#
+# This corresponds to `org.opencastproject.download.url` in `custom.properties`
+# or `org.opencastproject.distribution.aws.s3.distribution.base` in
+# `org.opencastproject.distribution.aws.s3.AwsS3DistributionServiceImpl.cfg`.
+#
+# Default value: ["/static"]
+#path_prefixes = ["/static"]
+
+
+[jwt]
+# List of URLs to a JWKS containing public keys used for verifying JWT
+# signatures. IMPORTANT: this is where the trust of the whole operation
+# stems from! Only specify URLs to services that you fully trust to give
+# access to Opencast resources.
+#
+# Example: ["https://tobira.example.com/.well-known/jwks.json"]
+#
+# Required! This value must be specified.
+trusted_keys = ["http://tobira.localtest.me/.well-known/jwks.json"]
+
+# Whether to regularly refetch `trusted_keys`. If `false`, they are
+# refetched on-the-fly if stale when handling an incoming request, slowing
+# down that request response.
+#
+# Default value: true
+#background_key_refresh = true
+
+# For how long keys fetched from JWKS URLs are considered valid. After
+# this time, they are considered stale and won't be used anymore.
+#
+# Default value: "10min"
+#key_cache_duration = "10min"
+
+# When checking `exp` and `nbf`, allow this amount of leeway to account
+# for possible clock skew.
+#
+# Default value: "3s"
+#allowed_clock_skew = "3s"
+
+
+[http]
+# Specifies how to respond to requests that are considered authorized.
+# - "empty": status 204, empty body, no special headers.
+# - "file": act as a file server, i.e. send the file in response. Requires
+#   `opencast.downloads_path` to be set!
+# - "x-accel-redirect:<prefix>": status 204, empty body, `X-Accel-Redirect`
+#   header is set to `<prefix>/<stripped_path>` where `stripped_path` is
+#   therequest path stripped of `opencast.path_prefixes`.
+#
+# Default value: "file"
+#on_allow = "file"
+
+# Specifies how to respond to requests that are considered unauthorized.
+# - "empty": status 403, empty body, no special headers.
+# - "x-accel-redirect:<prefix>": status 204, empty body, `X-Accel-Redirect`
+#   header is set to `<prefix>/<path>` where `path` is the full request
+#   path.
+#
+# Default value: "empty"
+#on_deny = "empty"
+
+# Origins from which CORS requests are allowed. Web apps that load assets
+# with the 'Authorization' header must be listed here. If empty, no CORS
+# requests are allowed.
+#
+# Default value: []
+cors_allowed_origins = [
+   'http://localhost'
+]
+
+# Where to look for a JWT in the HTTP request. First source has highest
+# priority. Each array element is an object. Possible sources:
+#
+# - `{ source = "query", name = "jwt" }`: from URL query parameter "jwt".
+#   `name` can be chosen arbitrarily. The first parameter with that name
+#   is used.
+# - `{ source = "header", name = "Authorization", prefix = "Bearer " }`:
+#   from first HTTP header with the given name. The optional `prefix` is
+#   stripped from the header value. If the header value does not start
+#   with the given prefix, it is ignored.
+#
+# Default value: [{ source = "header", name = "Authorization", prefix = "Bearer " }, { source = "query", name = "jwt" }]
+#jwt_sources = [{ source = "header", name = "Authorization", prefix = "Bearer " }, { source = "query", name = "jwt" }]
+
+# The TCP port the HTTP server should listen on.
+#
+# Default value: 4050
+#port = 4050
+
+# The bind address to listen on.
+#
+# Default value: "127.0.0.1"
+address = "0.0.0.0"
+
+# How long to wait for active connections to terminate when shutting down.
+#
+# Default value: "3s"
+#shutdown_timeout = "3s"
+
+
+[log]
+# Specifies what log messages to emit, based on the module path and log level.
+#
+# This is a map where the key specifies a module path prefix, and the
+# value specifies a minimum log level. For each log message, the map
+# entry with the longest prefix matching the log's module path is chosen.
+# If no such entry exists, the log is not emitted. Otherwise, that
+# entry's level is used to check whether the log message should be
+# emitted. Valid log levels: off, error, warn, info, debug, trace.
+#
+# Take the following example: the following config only allows ≥"info"
+# logs from octoka generally, but also ≥"trace" messages from the `http`
+# submodule. But it completely disables all logs from `tobira::http::fs`.
+# Finally, it also enabled ≥"debug" messages from one of octoka's
+# dependencies, the HTTP library `hyper`.
+#
+#    [log]
+#    filters.octoka = "info"
+#    filters."octoka::http" = "trace"
+#    filters."octoka::http::fs" = "off"
+#    filters.hyper = "debug"
+#
+# Default value: { octoka = "info" }
+#filters = { octoka = "info" }
+
+# If this is set, log messages are also written to this file.
+#file =
+
+# If this is set to `false`, log messages are not written to stdout.
+#
+# Default value: true
+#stdout = true
