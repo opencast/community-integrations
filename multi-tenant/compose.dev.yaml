@@ -8,7 +8,7 @@ networks:
 services:
 
   opencast:
-    image: quay.io/opencast/build:19
+    image: quay.io/opencast/build:20
     entrypoint: /bin/sh -c
     command:
       - |
@@ -28,5 +28,4 @@ services:
       - ./services/opencast/etc/org.opencastproject.organization-mh_default_org.cfg:/etc/opencast/org.opencastproject.organization-mh_default_org.cfg:ro
       - ./services/opencast/etc/org.opencastproject.organization-tenant-a.cfg:/etc/opencast/org.opencastproject.organization-tenant-a.cfg:ro
       - ./services/opencast/etc/org.opencastproject.organization-tenant-b.cfg:/etc/opencast/org.opencastproject.organization-tenant-b.cfg:ro
-      - ./services/opencast/etc/org.ops4j.pax.logging.cfg:/etc/opencast/org.ops4j.pax.logging.cfg:ro
       - data:/data

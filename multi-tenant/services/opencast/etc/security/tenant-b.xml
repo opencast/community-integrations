@@ -19,7 +19,7 @@
   <sec:http pattern="/favicon.ico" security="none" />
 
   <sec:http create-session="ifRequired" servlet-api-provision="true" realm="Opencast"
-            entry-point-ref="opencastEntryPoint">
+            entry-point-ref="opencastEntryPoint" disable-url-rewriting="true">
 
     <sec:access-denied-handler error-page="/403.html"/>
 
@@ -53,6 +53,7 @@
     <sec:intercept-url pattern="/workflow/definitions.json" method="GET" access="ROLE_ADMIN, ROLE_UI_EVENTS_CREATE" />
     <sec:intercept-url pattern="/admin-ng/acl/acls.json" method="GET" access="ROLE_ADMIN, ROLE_UI_ACLS_VIEW" />
     <sec:intercept-url pattern="/admin-ng/acl/*" method="GET" access="ROLE_ADMIN, ROLE_UI_ACLS_VIEW" />
+    <sec:intercept-url pattern="/admin-ng/acl/acl/*" method="GET" access="ROLE_ADMIN, ROLE_UI_ACLS_VIEW" />
     <sec:intercept-url pattern="/acl-manager/acl/*" method="GET" access="ROLE_ADMIN, ROLE_UI_ACLS_VIEW" />
     <sec:intercept-url pattern="/admin-ng/capture-agents/agents.json" method="GET" access="ROLE_ADMIN, ROLE_UI_LOCATIONS_VIEW, ROLE_UI_EVENTS_CREATE" />
     <sec:intercept-url pattern="/admin-ng/capture-agents/*" method="GET" access="ROLE_ADMIN, ROLE_UI_LOCATIONS_DETAILS_CAPABILITIES_VIEW, ROLE_UI_LOCATIONS_DETAILS_CONFIGURATION_VIEW, ROLE_UI_LOCATIONS_DETAILS_GENERAL_VIEW" />
@@ -145,6 +146,7 @@
     <sec:intercept-url pattern="/admin-ng/series/*/theme" method="PUT" access="ROLE_ADMIN, ROLE_UI_SERIES_DETAILS_THEMES_EDIT" />
     <sec:intercept-url pattern="/admin-ng/themes/*" method="PUT" access="ROLE_ADMIN, ROLE_UI_THEMES_EDIT" />
     <sec:intercept-url pattern="/admin-ng/users/*" method="PUT" access="ROLE_ADMIN, ROLE_UI_USERS_EDIT" />
+    <sec:intercept-url pattern="/admin-ng/users/password/*" method="PUT" access="ROLE_ADMIN, ROLE_ADMIN_UI" />
     <sec:intercept-url pattern="/admin-ng/user-settings/signature/*" method="PUT" access="ROLE_ADMIN, ROLE_ADMIN_UI" />
     <sec:intercept-url pattern="/admin-ng/user-settings/setting/*" method="PUT" access="ROLE_ADMIN, ROLE_ADMIN_UI" />
     <sec:intercept-url pattern="/admin-ng/adopter/**" method="PUT" access="ROLE_ADMIN" />
@@ -523,9 +525,15 @@
   <!-- Differentiates between "normal" user requests and those requesting digest auth -->
   <bean id="opencastEntryPoint" class="org.opencastproject.kernel.security.DelegatingAuthenticationEntryPoint">
     <!-- CAS Auth:  Comment this if using CAS authentication -->
+    <!-- Shibboleth Auth:  Comment this if using Shibboleth authentication -->
+    <!-- Custom Auth:  Comment this if using a custom authentication entry point -->
     <property name="userEntryPoint" ref="userEntryPoint" />
     <!-- CAS Auth:  Uncomment this if using CAS authentication -->
     <!-- <property name="userEntryPoint" ref="casEntryPoint" /> -->
+    <!-- Shibboleth Auth:  Uncomment this if using Shibboleth authentication -->
+    <!-- <property name="userEntryPoint" ref="shibbolethEntryPoint" /> -->
+    <!-- Custom Auth:  Uncomment this if using a custom authentication entry point -->
+    <!-- <property name="userEntryPoint" ref="customUserEntryPoint" /> -->
     <property name="digestAuthenticationEntryPoint" ref="digestEntryPoint" />
     <property name="basicAuthenticationEntryPoint" ref="basicEntryPoint" />
   </bean>
@@ -556,14 +564,15 @@
         <value>/engage-player/</value>
         <value>/ltitools</value>
         <value>/ltitools/</value>
+        <value>/paella*/ui/auth.html</value>
       </list>
     </property>
   </bean>
 
   <!-- Redirect unauthenticated requests to custom login url with configurable redirect query parameter
-       Example: http://localhost/Shibboleth.sso/Login?target=<RELATIVE_REQUEST_URL> -->
-  <!--bean id="userEntryPoint" class="org.opencastproject.kernel.security.RedirectQueryParamAuthenticationEntryPoint">
-    <constructor-arg index="0" value="/Shibboleth.sso/Login" />
+       Example: http://localhost/sso/login?target=<RELATIVE_REQUEST_URL> -->
+  <!--bean id="customUserEntryPoint" class="org.opencastproject.kernel.security.RedirectQueryParamAuthenticationEntryPoint">
+    <constructor-arg index="0" value="/sso/login" />
     <constructor-arg index="1" value="target" />
   </bean-->
 
@@ -692,6 +701,12 @@
   <!-- ###################### -->
   <!-- # Shibboleth Support # -->
   <!-- ###################### -->
+
+  <!--
+  <bean id="shibbolethEntryPoint" class="org.opencastproject.kernel.security.RedirectQueryParamAuthenticationEntryPoint">
+    <constructor-arg index="0" value="/Shibboleth.sso/Login" />
+    <constructor-arg index="1" value="target" />
+  </bean>-->
 
   <!-- General Shibboleth header extration filter
   <bean id="shibbolethHeaderFilter"
