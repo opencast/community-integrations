@@ -7,7 +7,7 @@ networks:
 
 services:
   nginx:
-    image: docker.io/library/nginx:1.29-alpine
+    image: docker.io/library/nginx:1.31-alpine
     restart: on-failure
     ports:
       - "80:80"
@@ -23,7 +23,7 @@ services:
           - tenant-b.localtest.me
 
   opencast:
-    image: quay.io/opencast/allinone:19
+    image: quay.io/opencast/allinone:20
     hostname: opencast
     healthcheck:
       disable: true
@@ -45,11 +45,14 @@ services:
       - ./services/opencast/etc/org.opencastproject.organization-mh_default_org.cfg:/etc/opencast/org.opencastproject.organization-mh_default_org.cfg:ro
       - ./services/opencast/etc/org.opencastproject.organization-tenant-a.cfg:/etc/opencast/org.opencastproject.organization-tenant-a.cfg:ro
       - ./services/opencast/etc/org.opencastproject.organization-tenant-b.cfg:/etc/opencast/org.opencastproject.organization-tenant-b.cfg:ro
-      - ./services/opencast/etc/org.ops4j.pax.logging.cfg:/etc/opencast/org.ops4j.pax.logging.cfg:ro
       - data:/data
 
   opensearch:
-    image: opensearchproject/opensearch:1
+    image: opencast/opensearch:1
+    build:
+      dockerfile_inline: |
+        FROM docker.io/opensearchproject/opensearch:1
+        RUN bin/opensearch-plugin install analysis-icu
     environment:
       discovery.type: single-node
       bootstrap.memory_lock: 'true'
