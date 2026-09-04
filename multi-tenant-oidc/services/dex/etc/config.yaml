@@ -1,0 +1,46 @@
+issuer: http://auth.localtest.me
+
+storage:
+  type: memory
+
+web:
+  http: 0.0.0.0:5556
+
+telemetry:
+  http: 0.0.0.0:5558
+
+oauth2:
+  responseTypes: [ code ]
+  skipApprovalScreen: true
+  alwaysShowLoginScreen: false
+
+expiry:
+  signingKeys: 6h
+  idTokens: 24h
+  authRequests: 24h
+  deviceRequests: 5m
+  refreshTokens:
+    disableRotation: false
+    absoluteLifetime: 720h # = 30d
+    validIfNotUsedFor: 168h # = 7d
+    reuseInterval: 5s
+
+logger:
+  level: info
+  format: text
+
+staticClients:
+  - id: auth-proxy.localtest.me
+    name: auth-proxy.localtest.me
+    secret: secret
+    redirectURIs:
+      - http://auth-proxy.localtest.me/oauth2/callback
+
+enablePasswordDB: true
+
+staticPasswords:
+  - userID: example
+    username: Example
+    email: example@opencast.org
+    # bcrypt hash of the string password: $(echo password | htpasswd -BinC 10 admin | cut -d: -f2)
+    hash: $2y$10$77GvU/wgKJiNuG/Ut4FxFu64Cva9Na316HrjVn5zK7PixjcnFPOcG # = password
